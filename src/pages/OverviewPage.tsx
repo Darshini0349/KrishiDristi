@@ -33,7 +33,7 @@ export default function OverviewPage() {
 
   const s = summary.status === 'success' ? summary.data : null
   const latestObs = s?.latest_observation_date ?? (availability.status === 'success' ? availability.data?.latest_observation_date : null) ?? null
-  const cropsDetected = s ? s.distribution.filter((d) => d.field_count > 0).length : null
+  const cropsDetected = s && s.distribution.length > 0 ? s.distribution.filter((d) => d.field_count > 0).length : null
   const loadingSummary = summary.status === 'loading'
   const boundaryProps = boundary.status === 'success' ? boundary.data.features[0]?.properties : null
 
@@ -57,6 +57,7 @@ export default function OverviewPage() {
           icon={<Ruler className="h-4 w-4" />}
           loading={loadingSummary}
           value={s?.total_area_ha != null ? formatHectares(s.total_area_ha) : null}
+          unavailableText={s ? 'No classifications yet' : 'Data not available'}
           hint={s ? 'From classification summary' : undefined}
         />
         <StatCard
@@ -64,12 +65,14 @@ export default function OverviewPage() {
           icon={<Grid3x3 className="h-4 w-4" />}
           loading={loadingSummary}
           value={s?.classified_fields != null ? formatNumber(s.classified_fields) : null}
+          unavailableText={s ? 'No classifications yet' : 'Data not available'}
         />
         <StatCard
           label="Crop categories detected"
           icon={<Layers3 className="h-4 w-4" />}
           loading={loadingSummary}
           value={cropsDetected !== null ? `${cropsDetected} / 8` : null}
+          unavailableText={s ? 'No classifications yet' : 'Data not available'}
           hint={cropsDetected === null ? 'Intended: 8 categories' : undefined}
         />
         <StatCard
@@ -91,6 +94,7 @@ export default function OverviewPage() {
         >
           <InteractiveMap
             className="h-[380px]"
+            showTaluks
             legendItems={field ? [{ label: 'Selected field', color: '#d97a1b', kind: 'line' }] : []}
           >
             {field && <FieldBoundaryLayer field={field} />}
@@ -188,20 +192,24 @@ export default function OverviewPage() {
             <StatusRow
               label="District boundary"
               tone={boundaryProps ? (boundaryProps.approximate ? 'warning' : 'success') : boundary.status === 'error' ? 'danger' : 'info'}
-              value={boundaryProps ? (boundaryProps.approximate ? 'Approximate' : 'Official') : boundary.status === 'error' ? 'Missing' : 'Loading'}
-              detail={boundaryProps?.source}
+              value={boundaryProps ? (boundaryProps.approximate ? 'Approximate' : 'Loaded') : boundary.status === 'error' ? 'Missing' : 'Loading'}
+              detail={boundaryProps ? (boundaryProps.approximate ? boundaryProps.source : 'District + 8 taluks · LGD via geoBoundaries') : undefined}
             />
             <StatusRow
               label="Sentinel-2 imagery"
               tone={availability.status === 'success' && (availability.data?.observations.length ?? 0) > 0 ? 'success' : availability.status === 'loading' ? 'info' : 'warning'}
               value={
                 availability.status === 'success'
-                  ? `${availability.data?.observations.length ?? 0} scenes`
+                  ? `${availability.data?.observations.length ?? 0} dates`
                   : availability.status === 'loading'
                     ? 'Checking'
                     : 'Awaiting data'
               }
-              detail="Level-2A surface reflectance"
+              detail={
+                availability.status === 'success' && availability.data?.date_from
+                  ? `L2A · ${formatDate(availability.data.date_from)} – ${formatDate(availability.data.date_to)} · ≤${availability.data.max_cloud_pct}% cloud`
+                  : 'Level-2A surface reflectance'
+              }
             />
             <StatusRow
               label="Training labels"

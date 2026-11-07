@@ -1,14 +1,20 @@
 import { useMemo } from 'react'
 import type { FieldFeature } from '@/types/geo'
 import { m2ToHectares, pointInPolygon, polygonArea, polygonCentroid } from '@/utils/geo'
-import { useDistrictBoundary } from './useDistrictBoundary'
+import { useDistrictBoundary, useTalukBoundaries } from './useDistrictBoundary'
 
 const MAX_FIELD_HA = 500
 
 /** Client-side checks on a selected field: area and location within the district. */
 export function useFieldValidation(field: FieldFeature | null) {
   const boundary = useDistrictBoundary()
-  return useMemo(() => {
+  const taluks = useTalukBoundaries()
+  const taluk = useMemo(() => {
+    if (!field || taluks.status !== 'success') return null
+    const c = polygonCentroid(field.geometry)
+    return taluks.data.features.find((f) => pointInPolygon(c, f.geometry))?.properties?.name ?? null
+  }, [field, taluks])
+  const result = useMemo(() => {
     if (!field) return { areaHa: null, warning: null, blocking: false }
     const areaHa = m2ToHectares(polygonArea(field.geometry))
     if (areaHa <= 0) return { areaHa, warning: 'The field polygon has no area.', blocking: true }
@@ -31,4 +37,5 @@ export function useFieldValidation(field: FieldFeature | null) {
     }
     return { areaHa, warning: null, blocking: false }
   }, [field, boundary])
+  return { ...result, taluk }
 }

@@ -13,8 +13,11 @@ export const MYSURU_MAX_BOUNDS: LatLngBoundsExpression = [
   [13.3, 77.6],
 ]
 
-/** Static boundary file. Replace with the official boundary when provided. */
+/** Static boundary files (EPSG:4326). See public/data/README.md for provenance. */
 export const DISTRICT_BOUNDARY_URL = '/data/mysuru-boundary.geojson'
+export const TALUK_BOUNDARY_URL = '/data/mysuru-taluks.geojson'
+export const BOUNDARY_ATTRIBUTION =
+  'Boundaries: <a href="https://lgdirectory.gov.in">LGD</a> via <a href="https://www.geoboundaries.org">geoBoundaries</a> (ODbL)'
 
 export const BASE_LAYERS = {
   osm: {

@@ -75,7 +75,7 @@ export default function ClassificationPage() {
               <RegionSelector regions={regions} value={region} onChange={setRegion} />
             </Step>
             <Step n={2} title="Field boundary" done={!!field && !validation.blocking}>
-              <FieldSummary field={field} onChange={onFieldChange} warning={validation.warning} disabled={running} />
+              <FieldSummary field={field} onChange={onFieldChange} warning={validation.warning} taluk={validation.taluk} disabled={running} />
             </Step>
             <Step n={3} title="Observation date" done={!!observationDate}>
               <DateSelector availability={availability} value={observationDate} onChange={setObservationDate} />
@@ -109,6 +109,7 @@ export default function ClassificationPage() {
         >
           <InteractiveMap
             className="h-[420px] lg:h-auto lg:min-h-[560px] lg:flex-1"
+            showTaluks
             legendItems={field ? [{ label: 'Selected field', color: '#d97a1b', kind: 'line' }] : []}
             ariaLabel="Map for selecting a field boundary in Mysuru district"
           >

@@ -9,6 +9,7 @@ import { DISTRICT_BOUNDARY_URL } from '@/config/map'
 import { formatDateTime } from '@/utils/format'
 
 const ENDPOINT_DOCS = [
+  { method: 'GET', path: '/api/health', purpose: 'Backend health and model status' },
   { method: 'GET', path: ENDPOINTS.regions, purpose: 'List supported regions' },
   { method: 'GET', path: ENDPOINTS.region('mysuru'), purpose: 'Region detail and boundary' },
   { method: 'GET', path: ENDPOINTS.satelliteAvailability, purpose: 'Sentinel-2 acquisitions and imagery tile layers' },
@@ -91,7 +92,7 @@ export default function SettingsPage() {
         </form>
       </DashboardCard>
 
-      <DashboardCard flush title="Planned API endpoints" subtitle="The frontend is wired to these routes; they will work once the FastAPI service implements them.">
+      <DashboardCard flush title="API endpoints" subtitle="Implemented by the FastAPI service in backend/. Interactive docs at /docs on the API server.">
         <ul className="divide-y divide-line">
           {ENDPOINT_DOCS.map((e) => (
             <li key={e.method + e.path} className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:gap-3">
@@ -108,9 +109,10 @@ export default function SettingsPage() {
           <div><dt className="label">District boundary file</dt><dd className="font-mono text-xs">{DISTRICT_BOUNDARY_URL}</dd></div>
           <div>
             <dt className="label">Boundary status</dt>
-            <dd>{props ? <StatusBadge tone={props.approximate ? 'warning' : 'success'}>{props.approximate ? 'Approximate placeholder' : 'Official'}</StatusBadge> : boundary.status === 'error' ? <StatusBadge tone="danger">{boundary.error}</StatusBadge> : '—'}</dd>
+            <dd>{props ? <StatusBadge tone={props.approximate ? 'warning' : 'success'}>{props.approximate ? 'Approximate placeholder' : 'Loaded from source data'}</StatusBadge> : boundary.status === 'error' ? <StatusBadge tone="danger">{boundary.error}</StatusBadge> : '—'}</dd>
           </div>
           <div className="sm:col-span-2"><dt className="label">Boundary source</dt><dd className="text-xs text-ink-muted">{props?.source ?? '—'}</dd></div>
+          <div className="sm:col-span-2"><dt className="label">Taluk boundaries</dt><dd className="font-mono text-xs">/data/mysuru-taluks.geojson</dd></div>
           <div><dt className="label">Base map</dt><dd className="text-xs text-ink-muted">OpenStreetMap standard tiles</dd></div>
           <div><dt className="label">Coordinate reference</dt><dd className="font-mono text-xs">EPSG:4326 (GeoJSON [lng, lat])</dd></div>
         </dl>

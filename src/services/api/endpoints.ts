@@ -12,4 +12,4 @@ export const ENDPOINTS = {
 } as const
 
 /** Endpoint used to probe whether the backend is reachable. */
-export const HEALTH_PROBE_ENDPOINT = ENDPOINTS.regions
+export const HEALTH_PROBE_ENDPOINT = '/api/health'

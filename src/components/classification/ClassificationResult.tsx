@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { CheckCircle2, CircleDashed, CloudOff, ScanSearch, XCircle } from 'lucide-react'
+import { BrainCircuit, CheckCircle2, CircleDashed, CloudOff, Satellite, ScanSearch, XCircle } from 'lucide-react'
 import type { MutationResult } from '@/hooks/useApi'
-import type { ClassificationStatus, PredictRequest, PredictResponse } from '@/types/classification'
+import type { ClassificationStatus, FieldObservation, PredictRequest, PredictResponse } from '@/types/classification'
 import { getCrop } from '@/config/crops'
 import { EmptyState, ErrorState, LoadingIndicator, StatusBadge, type BadgeTone } from '@/components/ui'
 import { formatDate, formatDateTime, formatHectares, formatPercent } from '@/utils/format'
@@ -18,6 +18,36 @@ const STATUS: Record<ClassificationStatus, { tone: BadgeTone; label: string; ico
   pending: { tone: 'info', label: 'Pending', icon: <CircleDashed className="h-3 w-3" /> },
   no_data: { tone: 'warning', label: 'No data', icon: <CloudOff className="h-3 w-3" /> },
   failed: { tone: 'danger', label: 'Failed', icon: <XCircle className="h-3 w-3" /> },
+  model_unavailable: { tone: 'info', label: 'Model not trained', icon: <BrainCircuit className="h-3 w-3" /> },
+}
+
+/** Real measurements of the field from the Sentinel-2 scene the backend used. */
+function ObservationDetails({ obs, date }: { obs: FieldObservation; date?: string | null }) {
+  return (
+    <div className="border-t border-line px-4 py-3">
+      <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-ink-muted">
+        <Satellite className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" /> Sentinel-2 measurement{date ? ` · ${formatDate(date)}` : ''}
+      </p>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+        <div>
+          <dt className="text-ink-subtle">Mean NDVI</dt>
+          <dd className="text-base font-semibold tabular-nums">{obs.ndvi_mean != null ? obs.ndvi_mean.toFixed(2) : '—'}</dd>
+        </div>
+        <div>
+          <dt className="text-ink-subtle">NDVI spread (std)</dt>
+          <dd className="text-base font-semibold tabular-nums">{obs.ndvi_std != null ? obs.ndvi_std.toFixed(2) : '—'}</dd>
+        </div>
+        <div><dt className="text-ink-subtle">Cloud over field</dt><dd className="font-medium tabular-nums">{obs.field_cloud_pct != null ? `${obs.field_cloud_pct.toFixed(0)}%` : '—'}</dd></div>
+        <div><dt className="text-ink-subtle">Pixels measured</dt><dd className="font-medium tabular-nums">{obs.pixel_count ?? '—'}</dd></div>
+        <div className="col-span-2">
+          <dt className="text-ink-subtle">Scene</dt>
+          <dd className="font-mono text-[10.5px] break-all">{obs.scene_id}</dd>
+          <dd className="text-[11px] text-ink-subtle">{obs.platform}{obs.scene_cloud_cover_pct != null ? ` · scene cloud ${obs.scene_cloud_cover_pct}%` : ''}</dd>
+        </div>
+      </dl>
+      <p className="mt-2 text-[11px] leading-snug text-ink-subtle">NDVI ranges from −1 to 1; higher values mean denser green vegetation.</p>
+    </div>
+  )
 }
 
 function ElapsedTimer() {
@@ -75,9 +105,27 @@ export function ClassificationResult({ result, localAreaHa, onRetry }: Classific
       <div className="animate-fade-in">
         <EmptyState
           icon={<CloudOff className="h-4 w-4" />}
-          title="No satellite data or crop labels"
+          title="No usable satellite data"
           description={data.message ?? 'The selected field or date has no usable Sentinel-2 imagery (e.g. cloud cover) or no training labels for this region.'}
         />
+        {data.observation && <ObservationDetails obs={data.observation} date={data.observation_date} />}
+      </div>
+    )
+  }
+
+  if (data.status === 'model_unavailable') {
+    return (
+      <div className="animate-fade-in">
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <p className="eyebrow">Predicted crop type</p>
+            <StatusBadge tone={status.tone}>{status.icon}{status.label}</StatusBadge>
+          </div>
+          <p className="mt-2 text-sm font-medium text-ink">No prediction yet</p>
+          <p className="mt-1 text-xs leading-relaxed text-ink-muted">{data.message}</p>
+          <p className="mt-2 text-xs text-ink-muted">Field area: <span className="font-medium text-ink">{formatHectares(data.field_area_ha ?? localAreaHa)}</span></p>
+        </div>
+        {data.observation && <ObservationDetails obs={data.observation} date={data.observation_date} />}
       </div>
     )
   }
@@ -147,6 +195,7 @@ export function ClassificationResult({ result, localAreaHa, onRetry }: Classific
           </ul>
         </div>
       )}
+      {data.observation && <ObservationDetails obs={data.observation} date={data.observation_date} />}
       {data.message && crop && <p className="border-t border-line px-4 py-3 text-xs text-ink-muted">{data.message}</p>}
     </div>
   )

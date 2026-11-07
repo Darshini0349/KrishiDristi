@@ -37,7 +37,7 @@ export function DateSelector({ availability, value, onChange, id = 'obs-date' }:
                 <label className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2 text-sm transition-colors ${selected ? 'border-brand-500 bg-brand-50' : 'border-line hover:bg-surface'}`}>
                   <input type="radio" name={id} className="accent-brand-700" checked={selected} onChange={() => onChange(o.date)} />
                   <span className="font-medium tabular-nums">{formatDate(o.date)}</span>
-                  <span className="font-mono text-[11px] text-ink-subtle">{o.platform}{o.tile_id ? ` · ${o.tile_id}` : ''}</span>
+                  <span className="min-w-0 truncate font-mono text-[11px] text-ink-subtle" title={o.platform}>{o.tile_id ?? o.platform}</span>
                   {typeof o.cloud_cover_pct === 'number' && (
                     <span className="ml-auto inline-flex items-center gap-1 text-[11px] text-ink-muted">
                       <CloudSun className="h-3 w-3" aria-hidden="true" /> {o.cloud_cover_pct.toFixed(0)}%

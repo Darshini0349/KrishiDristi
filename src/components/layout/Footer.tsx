@@ -27,6 +27,7 @@ export function Footer() {
           <ul className="mt-3 space-y-2 text-sm text-brand-300">
             <li>Contains modified Copernicus Sentinel data (once imagery is ingested)</li>
             <li>Base map © OpenStreetMap contributors</li>
+            <li>Boundaries: Local Government Directory via geoBoundaries (ODbL)</li>
             <li>Released under the MIT License</li>
           </ul>
         </div>

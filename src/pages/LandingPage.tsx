@@ -39,8 +39,8 @@ const IMPACT = [
 const STATUS: { label: string; done: boolean }[] = [
   { label: 'Web platform & map interface', done: true },
   { label: 'API contract defined', done: true },
-  { label: 'FastAPI backend', done: false },
-  { label: 'Sentinel-2 ingestion pipeline', done: false },
+  { label: 'FastAPI backend', done: true },
+  { label: 'Live Sentinel-2 L2A access', done: true },
   { label: 'Verified ground-truth labels', done: false },
   { label: 'Trained & validated model', done: false },
 ]

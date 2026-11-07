@@ -4,9 +4,14 @@
 KrishiDrishti is a geospatial AI platform for **crop type classification** from **Sentinel-2** imagery and machine learning.
 Version 1 covers **Mysuru district, Karnataka, India**.
 
-This repository contains the web frontend. The FastAPI backend and the ML pipeline are planned and not part of this code yet.
+This repository contains the web frontend (repo root) and the FastAPI backend (`backend/`).
+The crop classification model is not trained yet; the backend says so instead of inventing predictions.
 
 ## Run it
+
+1. **Backend** — see [backend/README.md](backend/README.md):
+   `uvicorn app.main:app --reload --port 8000` inside `backend/`
+2. **Website**, in a second terminal at the repo root:
 
 ```bash
 npm install
@@ -48,11 +53,12 @@ src/
 
 GeoJSON coordinates are always `[lng, lat]`. Conversion to Leaflet's `[lat, lng]` happens only in `utils/geo.ts`.
 
-## Expected API (FastAPI, to be implemented)
+## API (implemented in backend/)
 
 | Method | Path | Used by |
 |---|---|---|
-| GET | `/api/regions` | Region selector, backend health probe |
+| GET | `/api/health` | Backend health probe |
+| GET | `/api/regions` | Region selector |
 | GET | `/api/regions/{id}` | Region detail + boundary |
 | GET | `/api/satellite/availability?region_id=` | Date selector, Explorer layers (`layers[].tile_url`) |
 | POST | `/api/classification/predict` | Crop Classification: `{ region_id, observation_date, field: Feature<Polygon> }` |

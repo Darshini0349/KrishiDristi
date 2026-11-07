@@ -3,6 +3,7 @@ import { GeoJSON, useMap } from 'react-leaflet'
 import { geoJSON } from 'leaflet'
 import type { BoundaryCollection } from '@/types/geo'
 import { DISTRICT_APPROX_STYLE, DISTRICT_STYLE } from './mapStyles'
+import { BOUNDARY_ATTRIBUTION } from '@/config/map'
 
 interface DistrictBoundaryLayerProps {
   data: BoundaryCollection
@@ -26,6 +27,7 @@ export function DistrictBoundaryLayer({ data, fit = true }: DistrictBoundaryLaye
       data={data}
       style={approximate ? DISTRICT_APPROX_STYLE : DISTRICT_STYLE}
       interactive={false}
+      attribution={approximate ? undefined : BOUNDARY_ATTRIBUTION}
     />
   )
 }
