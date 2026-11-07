@@ -1,0 +1,248 @@
+{
+  "model": "K-means on monthly median NDVI (unsupervised crop-pattern grouping)",
+  "created_at": "2026-11-07T17:37:51+00:00",
+  "region": "T. Narasipura",
+  "source": "Copernicus Sentinel-2 L2A via Microsoft Planetary Computer",
+  "months": [
+    "2025-06",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05"
+  ],
+  "months_dropped": [
+    "2025-07 (14% clear)"
+  ],
+  "zoom": 12,
+  "pixel_size_m": 37.3,
+  "bounds": [
+    76.728515625,
+    12.039320557540568,
+    77.16796875,
+    12.468760144823221
+  ],
+  "silhouette_by_k": {
+    "4": 0.2528100609779358,
+    "5": 0.22200313210487366,
+    "6": 0.20459473133087158,
+    "7": 0.1892676204442978,
+    "8": 0.16233257949352264
+  },
+  "k": 4,
+  "pixels_used": 430753,
+  "rules": {
+    "water": "median NDVI < 0",
+    "never_green": "max NDVI < 0.3"
+  },
+  "groups": [
+    {
+      "id": "A",
+      "kind": "crop-pattern group",
+      "color": "#2a78d6",
+      "pixels": 98297,
+      "area_ha": 13711,
+      "mean_ndvi_curve": [
+        0.413,
+        0.402,
+        0.411,
+        0.367,
+        0.318,
+        0.314,
+        0.332,
+        0.307,
+        0.321
+      ],
+      "p25_curve": [
+        0.354,
+        0.342,
+        0.362,
+        0.327,
+        0.273,
+        0.264,
+        0.288,
+        0.257,
+        0.269
+      ],
+      "p75_curve": [
+        0.482,
+        0.474,
+        0.476,
+        0.415,
+        0.36,
+        0.357,
+        0.373,
+        0.356,
+        0.375
+      ],
+      "description": "steady all year (NDVI 0.31–0.41); no clear sowing or harvest"
+    },
+    {
+      "id": "B",
+      "kind": "crop-pattern group",
+      "color": "#eb6834",
+      "pixels": 142350,
+      "area_ha": 19856,
+      "mean_ndvi_curve": [
+        0.359,
+        0.38,
+        0.422,
+        0.294,
+        0.193,
+        0.176,
+        0.202,
+        0.179,
+        0.184
+      ],
+      "p25_curve": [
+        0.289,
+        0.308,
+        0.357,
+        0.247,
+        0.161,
+        0.143,
+        0.162,
+        0.139,
+        0.138
+      ],
+      "p75_curve": [
+        0.437,
+        0.465,
+        0.495,
+        0.341,
+        0.223,
+        0.206,
+        0.238,
+        0.215,
+        0.223
+      ],
+      "description": "one green season (Jun–Nov); peak Nov (NDVI 0.42), lowest Feb (0.18)"
+    },
+    {
+      "id": "C",
+      "kind": "crop-pattern group",
+      "color": "#1baf7a",
+      "pixels": 76281,
+      "area_ha": 10640,
+      "mean_ndvi_curve": [
+        0.446,
+        0.423,
+        0.448,
+        0.455,
+        0.447,
+        0.463,
+        0.465,
+        0.466,
+        0.478
+      ],
+      "p25_curve": [
+        0.392,
+        0.351,
+        0.405,
+        0.416,
+        0.399,
+        0.409,
+        0.421,
+        0.421,
+        0.435
+      ],
+      "p75_curve": [
+        0.522,
+        0.509,
+        0.507,
+        0.503,
+        0.497,
+        0.517,
+        0.51,
+        0.514,
+        0.524
+      ],
+      "description": "steady all year (NDVI 0.42–0.48); no clear sowing or harvest"
+    },
+    {
+      "id": "D",
+      "kind": "crop-pattern group",
+      "color": "#eda100",
+      "pixels": 81790,
+      "area_ha": 11409,
+      "mean_ndvi_curve": [
+        0.39,
+        0.411,
+        0.466,
+        0.296,
+        0.151,
+        0.141,
+        0.198,
+        0.458,
+        0.475
+      ],
+      "p25_curve": [
+        0.33,
+        0.349,
+        0.443,
+        0.245,
+        0.11,
+        0.101,
+        0.139,
+        0.408,
+        0.433
+      ],
+      "p75_curve": [
+        0.45,
+        0.488,
+        0.508,
+        0.349,
+        0.18,
+        0.173,
+        0.249,
+        0.515,
+        0.522
+      ],
+      "description": "two green seasons (Jun–Nov, Apr–May); peak May (NDVI 0.47), lowest Feb (0.14)"
+    },
+    {
+      "id": "N",
+      "kind": "rule",
+      "name": "Never green",
+      "color": "#c9c9c4",
+      "pixels": 23696,
+      "area_ha": 3305,
+      "mean_ndvi_curve": [
+        0.165,
+        0.161,
+        0.184,
+        0.167,
+        0.145,
+        0.133,
+        0.147,
+        0.133,
+        0.129
+      ],
+      "description": "max NDVI below 0.3 all year (built-up, rock, bare or permanently fallow)"
+    },
+    {
+      "id": "W",
+      "kind": "rule",
+      "name": "Water",
+      "color": "#4a5a6a",
+      "pixels": 8339,
+      "area_ha": 1163,
+      "mean_ndvi_curve": [
+        -0.034,
+        -0.08,
+        -0.008,
+        -0.023,
+        -0.037,
+        -0.053,
+        -0.047,
+        -0.054,
+        -0.067
+      ],
+      "description": "median NDVI below 0 (water bodies, river)"
+    }
+  ],
+  "note": "Groups are growth patterns, not crop names. Check visit_points.csv on the ground to name them."
+}
