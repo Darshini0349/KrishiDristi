@@ -91,6 +91,7 @@ export default function OverviewPage() {
         >
           <InteractiveMap
             className="h-[380px]"
+            showTaluks
             legendItems={field ? [{ label: 'Selected field', color: '#d97a1b', kind: 'line' }] : []}
           >
             {field && <FieldBoundaryLayer field={field} />}
@@ -188,8 +189,8 @@ export default function OverviewPage() {
             <StatusRow
               label="District boundary"
               tone={boundaryProps ? (boundaryProps.approximate ? 'warning' : 'success') : boundary.status === 'error' ? 'danger' : 'info'}
-              value={boundaryProps ? (boundaryProps.approximate ? 'Approximate' : 'Official') : boundary.status === 'error' ? 'Missing' : 'Loading'}
-              detail={boundaryProps?.source}
+              value={boundaryProps ? (boundaryProps.approximate ? 'Approximate' : 'Loaded') : boundary.status === 'error' ? 'Missing' : 'Loading'}
+              detail={boundaryProps ? (boundaryProps.approximate ? boundaryProps.source : 'District + 8 taluks · LGD via geoBoundaries') : undefined}
             />
             <StatusRow
               label="Sentinel-2 imagery"

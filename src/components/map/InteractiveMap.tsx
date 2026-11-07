@@ -2,9 +2,10 @@ import { useCallback, useState, type ReactNode } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { AlertTriangle } from 'lucide-react'
 import { BASE_LAYERS, MYSURU_CENTER, MYSURU_DEFAULT_ZOOM, MYSURU_MAX_BOUNDS } from '@/config/map'
-import { useDistrictBoundary } from '@/hooks/useDistrictBoundary'
+import { useDistrictBoundary, useTalukBoundaries } from '@/hooks/useDistrictBoundary'
 import { CoordinateDisplay } from './CoordinateDisplay'
 import { DistrictBoundaryLayer } from './DistrictBoundaryLayer'
+import { TalukBoundaryLayer } from './TalukBoundaryLayer'
 import { InvalidateOnResize, MapEventsBridge, type CursorState } from './MapEvents'
 import { MapLegend, type LegendItem } from './MapLegend'
 
@@ -13,6 +14,8 @@ export interface InteractiveMapProps {
   className?: string
   showBaseLayer?: boolean
   showBoundary?: boolean
+  /** Taluk (sub-district) outlines with hover names. */
+  showTaluks?: boolean
   showCoordinates?: boolean
   fitToBoundary?: boolean
   /** Extra legend entries (district boundary is added automatically). */
@@ -31,6 +34,7 @@ export function InteractiveMap({
   className = 'h-[420px]',
   showBaseLayer = true,
   showBoundary = true,
+  showTaluks = false,
   showCoordinates = true,
   fitToBoundary = true,
   legendItems = [],
@@ -41,6 +45,7 @@ export function InteractiveMap({
   ariaLabel = 'Interactive map of Mysuru district',
 }: InteractiveMapProps) {
   const boundary = useDistrictBoundary()
+  const taluks = useTalukBoundaries()
   const [cursor, setCursor] = useState<CursorState | null>(null)
   const [zoom, setZoom] = useState<number | null>(null)
   const handleZoom = useCallback((z: number) => setZoom(z), [])
@@ -50,6 +55,7 @@ export function InteractiveMap({
     ...(showBoundary && boundary.status === 'success'
       ? [{ label: 'District boundary', color: '#1f4d3a', kind: approximate ? 'dashed' : 'line', note: approximate ? 'approx.' : undefined } as LegendItem]
       : []),
+    ...(showTaluks && taluks.status === 'success' ? [{ label: 'Taluk boundary', color: '#4f9070', kind: 'dashed' } as LegendItem] : []),
     ...legendItems,
   ]
 
@@ -68,6 +74,7 @@ export function InteractiveMap({
         {showBaseLayer && (
           <TileLayer url={BASE_LAYERS.osm.url} attribution={BASE_LAYERS.osm.attribution} maxZoom={BASE_LAYERS.osm.maxZoom} />
         )}
+        {showTaluks && taluks.status === 'success' && <TalukBoundaryLayer data={taluks.data} />}
         {showBoundary && boundary.status === 'success' && <DistrictBoundaryLayer data={boundary.data} fit={fitToBoundary} />}
         <MapEventsBridge onCursor={setCursor} onZoom={handleZoom} onClick={onMapClick} />
         <InvalidateOnResize />

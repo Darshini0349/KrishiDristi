@@ -10,6 +10,15 @@ export const DISTRICT_STYLE: PathOptions = {
 
 export const DISTRICT_APPROX_STYLE: PathOptions = { ...DISTRICT_STYLE, dashArray: '6 5' }
 
+export const TALUK_STYLE: PathOptions = {
+  color: '#4f9070',
+  weight: 1,
+  opacity: 0.9,
+  dashArray: '3 3',
+  fillColor: '#4f9070',
+  fillOpacity: 0,
+}
+
 export const FIELD_STYLE: PathOptions = {
   color: '#d97a1b',
   weight: 2.5,

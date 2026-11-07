@@ -26,7 +26,7 @@ export default function SatelliteExplorerPage() {
   const { region, field } = useWorkspace()
   const availability = useSatelliteAvailability(region.id)
   const [params, setParams] = useSearchParams()
-  const [visible, setVisible] = useState<Record<string, boolean>>({ osm: true, boundary: true, field: true })
+  const [visible, setVisible] = useState<Record<string, boolean>>({ osm: true, boundary: true, taluks: true, field: true })
   const [clicked, setClicked] = useState<CursorState | null>(null)
   const [copied, setCopied] = useState(false)
 
@@ -54,6 +54,7 @@ export default function SatelliteExplorerPage() {
   const layers: MapLayerOption[] = [
     { id: 'osm', label: 'OpenStreetMap', description: 'Reference base map', available: true, visible: !!visible.osm, group: 'Base map' },
     { id: 'boundary', label: 'Mysuru district boundary', available: true, visible: !!visible.boundary, group: 'Boundaries' },
+    { id: 'taluks', label: 'Taluk boundaries', description: 'Hover a taluk to see its name', available: true, visible: !!visible.taluks, group: 'Boundaries' },
     {
       id: 'field',
       label: 'Selected field',
@@ -110,6 +111,7 @@ export default function SatelliteExplorerPage() {
             className="h-[60vh] min-h-[420px] xl:h-[calc(100dvh-13rem)] xl:min-h-[600px]"
             showBaseLayer={!!visible.osm}
             showBoundary={!!visible.boundary}
+            showTaluks={!!visible.taluks}
             fitToBoundary={!target}
             legendItems={legendItems}
             onMapClick={setClicked}

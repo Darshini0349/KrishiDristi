@@ -108,9 +108,10 @@ export default function SettingsPage() {
           <div><dt className="label">District boundary file</dt><dd className="font-mono text-xs">{DISTRICT_BOUNDARY_URL}</dd></div>
           <div>
             <dt className="label">Boundary status</dt>
-            <dd>{props ? <StatusBadge tone={props.approximate ? 'warning' : 'success'}>{props.approximate ? 'Approximate placeholder' : 'Official'}</StatusBadge> : boundary.status === 'error' ? <StatusBadge tone="danger">{boundary.error}</StatusBadge> : '—'}</dd>
+            <dd>{props ? <StatusBadge tone={props.approximate ? 'warning' : 'success'}>{props.approximate ? 'Approximate placeholder' : 'Loaded from source data'}</StatusBadge> : boundary.status === 'error' ? <StatusBadge tone="danger">{boundary.error}</StatusBadge> : '—'}</dd>
           </div>
           <div className="sm:col-span-2"><dt className="label">Boundary source</dt><dd className="text-xs text-ink-muted">{props?.source ?? '—'}</dd></div>
+          <div className="sm:col-span-2"><dt className="label">Taluk boundaries</dt><dd className="font-mono text-xs">/data/mysuru-taluks.geojson</dd></div>
           <div><dt className="label">Base map</dt><dd className="text-xs text-ink-muted">OpenStreetMap standard tiles</dd></div>
           <div><dt className="label">Coordinate reference</dt><dd className="font-mono text-xs">EPSG:4326 (GeoJSON [lng, lat])</dd></div>
         </dl>

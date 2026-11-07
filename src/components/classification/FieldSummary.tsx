@@ -10,6 +10,8 @@ interface FieldSummaryProps {
   onChange: (f: FieldFeature | null) => void
   /** Warning about the field (e.g. outside district). */
   warning?: string | null
+  /** Taluk containing the field centroid, if known. */
+  taluk?: string | null
   disabled?: boolean
 }
 
@@ -28,7 +30,7 @@ function parseFieldFile(text: string): FieldFeature {
   return { type: 'Feature', properties: { source: 'uploaded' }, geometry: { type: 'Polygon', coordinates: geom.coordinates.map(closeRing) } }
 }
 
-export function FieldSummary({ field, onChange, warning, disabled }: FieldSummaryProps) {
+export function FieldSummary({ field, onChange, warning, taluk, disabled }: FieldSummaryProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
@@ -88,7 +90,8 @@ export function FieldSummary({ field, onChange, warning, disabled }: FieldSummar
           <dt className="text-ink-subtle">Centroid</dt>
           <dd className="font-mono text-[11px] tabular-nums">{formatCoord(cLat, 'lat')}, {formatCoord(cLng, 'lng')}</dd>
         </div>
-        <div className="col-span-2"><dt className="text-ink-subtle">Source</dt><dd className="capitalize">{field.properties.source}</dd></div>
+        <div><dt className="text-ink-subtle">Taluk</dt><dd className="font-medium">{taluk ?? '—'}</dd></div>
+        <div><dt className="text-ink-subtle">Source</dt><dd className="capitalize">{field.properties.source}</dd></div>
       </dl>
       {warning && (
         <p className="mt-2 flex gap-1.5 text-[11px] leading-snug text-warn-600" role="alert">
