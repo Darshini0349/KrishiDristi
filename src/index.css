@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-draw/dist/leaflet.draw.css";
+
+/* ------------------------------------------------------------------
+   KrishiDrishti design tokens
+   Forest-green brand, neutral off-white surfaces, restrained radii.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-50: #eef5f1;
+  --color-brand-100: #d6e7dd;
+  --color-brand-200: #adcfbb;
+  --color-brand-300: #7eb295;
+  --color-brand-400: #4f9070;
+  --color-brand-500: #2f7454;
+  --color-brand-600: #225d43;
+  --color-brand-700: #1f4d3a;
+  --color-brand-800: #173a2c;
+  --color-brand-900: #0f2a20;
+  --color-brand-950: #0a1d16;
+
+  --color-surface: #f7f7f4;
+  --color-panel: #ffffff;
+  --color-line: #e3e4de;
+  --color-line-strong: #cfd1c8;
+  --color-ink: #17201b;
+  --color-ink-muted: #56605a;
+  --color-ink-subtle: #868e88;
+
+  --color-warn-50: #fbf6e8;
+  --color-warn-600: #8a6410;
+  --color-danger-50: #fbefed;
+  --color-danger-600: #a3392b;
+  --color-info-50: #eef3f8;
+  --color-info-600: #2f5d8a;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+
+  --shadow-panel: 0 1px 2px rgb(15 42 32 / 0.05), 0 1px 1px rgb(15 42 32 / 0.03);
+  --shadow-float: 0 6px 20px -6px rgb(15 42 32 / 0.18), 0 2px 4px rgb(15 42 32 / 0.06);
+
+  --animate-fade-in: fade-in 220ms ease-out both;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-800; }
+@utility btn-secondary { @apply btn border border-line-strong bg-panel text-ink hover:bg-surface; }
+@utility btn-ghost { @apply btn text-ink-muted hover:bg-brand-50 hover:text-ink; }
+@utility input {
+  @apply w-full rounded-md border border-line-strong bg-panel px-3 py-2 text-sm text-ink placeholder:text-ink-subtle focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none disabled:bg-surface disabled:text-ink-subtle;
+}
+@utility label { @apply mb-1.5 block text-xs font-medium tracking-wide text-ink-muted uppercase; }
+@utility eyebrow { @apply font-mono text-[11px] font-medium tracking-[0.14em] text-brand-600 uppercase; }
+
+/* Leaflet adjustments to match the product UI */
+.leaflet-container { font-family: var(--font-sans); background: #e9ebe5; }
+.leaflet-control-zoom a, .leaflet-draw-toolbar a { color: var(--color-ink) !important; }
+.leaflet-bar { border: 1px solid var(--color-line-strong) !important; box-shadow: var(--shadow-panel) !important; border-radius: var(--radius-md) !important; }
+.leaflet-control-attribution { font-size: 10px; }
+.leaflet-tooltip.kd-tooltip { border-radius: var(--radius-sm); border-color: var(--color-line-strong); box-shadow: var(--shadow-panel); font-size: 12px; }

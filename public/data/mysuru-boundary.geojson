@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mysuru District",
+        "admin_level": "district",
+        "state": "Karnataka",
+        "source": "Approximate hand-drawn placeholder — replace with official boundary",
+        "approximate": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [75.98, 12.35], [76.06, 12.52], [76.22, 12.66], [76.40, 12.72],
+          [76.56, 12.63], [76.72, 12.49], [76.90, 12.41], [77.05, 12.25],
+          [77.01, 12.06], [76.86, 11.98], [76.70, 11.90], [76.55, 11.78],
+          [76.36, 11.75], [76.20, 11.85], [76.09, 11.98], [76.00, 12.15],
+          [75.98, 12.35]
+        ]]
+      }
+    }
+  ]
+}
