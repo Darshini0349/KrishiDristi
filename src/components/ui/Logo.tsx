@@ -20,7 +20,7 @@ export function Logo({ tone = 'dark', showWordmark = true, className = '' }: Log
       {showWordmark && (
         <span className={`leading-none ${ink}`}>
           <span className="block text-[15px] font-semibold tracking-tight">KrishiDrishti</span>
-          <span className={`mt-0.5 block font-mono text-[9.5px] tracking-[0.16em] uppercase ${tone === 'light' ? 'text-brand-300' : 'text-brand-600'}`}>
+          <span className={`mt-1 block font-mono text-[9px] tracking-[0.12em] whitespace-nowrap uppercase ${tone === 'light' ? 'text-brand-300' : 'text-brand-600'}`}>
             Satellite crop intelligence
           </span>
         </span>

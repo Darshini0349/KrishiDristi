@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '@/components/ui'
 
+const YEAR = new Date().getFullYear()
+
 export function Footer() {
   return (
     <footer className="border-t border-white/8 bg-brand-950 text-brand-200">
@@ -31,7 +33,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/8">
         <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 font-mono text-[11px] text-brand-400 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-          <span>© {new Date().getFullYear()} KrishiDrishti</span>
+          <span>© {YEAR} KrishiDrishti</span>
           <span>v1 · Research prototype · Mysuru district</span>
         </div>
       </div>

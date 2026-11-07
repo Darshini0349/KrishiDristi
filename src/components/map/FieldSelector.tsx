@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 import L from '@/lib/leaflet'
 import 'leaflet-draw'
@@ -33,7 +33,9 @@ export function FieldSelector({ value, onChange, disabled = false }: FieldSelect
   const map = useMap()
   const groupRef = useRef<L.FeatureGroup>(new L.FeatureGroup())
   const onChangeRef = useRef(onChange)
-  onChangeRef.current = onChange
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange
+  })
 
   // Feature group + draw events
   useEffect(() => {

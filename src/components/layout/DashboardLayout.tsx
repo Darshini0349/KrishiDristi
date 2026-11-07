@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
 import { BackendStatusBanner } from '@/components/ui'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
@@ -7,9 +7,6 @@ import { GlobalSearch } from './GlobalSearch'
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { pathname } = useLocation()
-
-  useEffect(() => setSidebarOpen(false), [pathname])
 
   return (
     <div className="flex h-dvh overflow-hidden bg-surface">

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ApiError, toApiError } from '@/services/api/errors'
 
 export type AsyncStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -26,7 +26,9 @@ export function useApi<T>(
   const [state, setState] = useState<AsyncState<T>>({ status: enabled ? 'loading' : 'idle', data: null, error: null })
   const [nonce, setNonce] = useState(0)
   const fetcherRef = useRef(fetcher)
-  fetcherRef.current = fetcher
+  useLayoutEffect(() => {
+    fetcherRef.current = fetcher
+  })
 
   useEffect(() => {
     if (!enabled) {
