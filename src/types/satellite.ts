@@ -7,6 +7,8 @@ export interface SatelliteObservation {
   tile_id?: string | null // MGRS tile, e.g. "43PFP"
   cloud_cover_pct?: number | null
   product_id?: string | null
+  /** Number of Sentinel-2 scenes (tiles) acquired over the region that day. */
+  scene_count?: number
 }
 
 export interface SatelliteLayerSource {
@@ -21,7 +23,12 @@ export interface SatelliteLayerSource {
 /** Shape returned by GET /api/satellite/availability. */
 export interface SatelliteAvailability {
   region_id: string
+  date_from?: string
+  date_to?: string
+  max_cloud_pct?: number
   observations: SatelliteObservation[]
   latest_observation_date?: string | null
+  /** Date the imagery map layers were built for. */
+  layer_date?: string | null
   layers?: SatelliteLayerSource[]
 }

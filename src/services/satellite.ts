@@ -7,6 +7,8 @@ export interface AvailabilityQuery {
   date_from?: string
   date_to?: string
   max_cloud_pct?: number
+  /** Build imagery map layers for this date (default: latest observation). */
+  layer_date?: string
 }
 
 export function fetchSatelliteAvailability(params: AvailabilityQuery, signal?: AbortSignal) {

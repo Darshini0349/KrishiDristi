@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { CircleMarker, TileLayer, Tooltip } from 'react-leaflet'
 import type { LatLngTuple } from 'leaflet'
 import { Copy, Crosshair, MapPin, PencilRuler, X } from 'lucide-react'
-import { DashboardCard, PageHeader, StatusBadge } from '@/components/ui'
+import { DashboardCard, LoadingIndicator, PageHeader, StatusBadge } from '@/components/ui'
 import { FieldBoundaryLayer, FlyTo, InteractiveMap, LayerControl, type LegendItem, type MapLayerOption } from '@/components/map'
 import { useWorkspace } from '@/context/WorkspaceContext'
 import { useSatelliteAvailability } from '@/hooks/useRegionData'
@@ -23,10 +23,11 @@ const RASTER_LAYERS: { id: RasterId; label: string; description: string; group: 
 ]
 
 export default function SatelliteExplorerPage() {
-  const { region, field } = useWorkspace()
-  const availability = useSatelliteAvailability(region.id)
+  const { region, field, observationDate, setObservationDate } = useWorkspace()
+  const availability = useSatelliteAvailability(region.id, observationDate)
+  const avData = availability.data
   const [params, setParams] = useSearchParams()
-  const [visible, setVisible] = useState<Record<string, boolean>>({ osm: true, boundary: true, taluks: true, field: true })
+  const [visible, setVisible] = useState<Record<string, boolean>>({ osm: true, boundary: true, taluks: true, field: true, sentinel2_true_color: true })
   const [clicked, setClicked] = useState<CursorState | null>(null)
   const [copied, setCopied] = useState(false)
 
@@ -40,9 +41,9 @@ export default function SatelliteExplorerPage() {
 
   const sources = useMemo(() => {
     const map = new Map<RasterId, SatelliteLayerSource>()
-    if (availability.status === 'success') for (const l of availability.data?.layers ?? []) map.set(l.id, l)
+    if (availability.status === 'success') for (const l of avData?.layers ?? []) map.set(l.id, l)
     return map
-  }, [availability])
+  }, [availability.status, avData])
 
   const unavailableReason =
     availability.status === 'loading'
@@ -71,7 +72,7 @@ export default function SatelliteExplorerPage() {
         label: r.label,
         description: src?.date ? `${r.description} · ${formatDate(src.date)}` : r.description,
         available: !!src,
-        unavailableReason,
+        unavailableReason: r.id === 'classification' && availability.status === 'success' ? 'Appears once a crop model is trained and has classified fields.' : unavailableReason,
         visible: !!visible[r.id],
         group: r.group,
       }
@@ -95,14 +96,15 @@ export default function SatelliteExplorerPage() {
     }
   }
 
-  const obsCount = availability.status === 'success' ? (availability.data?.observations.length ?? 0) : null
+  const observations = avData?.observations ?? []
+  const obsCount = avData ? observations.length : null
 
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6">
       <PageHeader
         eyebrow="Satellite explorer"
         title="Map layers & field boundaries"
-        description="Inspect Mysuru district on the reference map. Sentinel-2 and model layers appear here once the backend publishes real imagery tiles."
+        description="Real Sentinel-2 imagery of Mysuru district, served by the backend from the Copernicus archive. Choose an acquisition date, toggle layers and inspect fields."
       />
 
       <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
@@ -189,19 +191,36 @@ export default function SatelliteExplorerPage() {
             )}
           </DashboardCard>
 
-          <DashboardCard title="Imagery availability">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-ink-muted">Sentinel-2 observations</span>
-              {obsCount === null ? (
-                <StatusBadge tone={availability.status === 'loading' ? 'info' : 'warning'}>{availability.status === 'loading' ? 'Checking' : 'Awaiting satellite data'}</StatusBadge>
-              ) : (
-                <span className="font-semibold tabular-nums">{obsCount}</span>
-              )}
-            </div>
-            {availability.status === 'success' && availability.data?.latest_observation_date && (
-              <div className="mt-2 flex items-center justify-between text-xs">
-                <span className="text-ink-muted">Latest</span>
-                <span className="font-medium">{formatDate(availability.data.latest_observation_date)}</span>
+          <DashboardCard title="Imagery date" subtitle="Sentinel-2 L2A acquisitions over the region">
+            {availability.status === 'loading' && !avData ? (
+              <LoadingIndicator size="sm" label="Checking Sentinel-2 archive…" />
+            ) : availability.status === 'error' && !avData ? (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-ink-muted">Sentinel-2 observations</span>
+                <StatusBadge tone="warning">Awaiting satellite data</StatusBadge>
+              </div>
+            ) : obsCount === 0 ? (
+              <p className="text-xs text-ink-muted">No acquisitions below the cloud limit in this period.</p>
+            ) : (
+              <div className="space-y-2">
+                <label htmlFor="explorer-date" className="label">Show imagery from</label>
+                <select
+                  id="explorer-date"
+                  className="input"
+                  value={avData?.layer_date ?? ''}
+                  onChange={(e) => setObservationDate(e.target.value || null)}
+                  disabled={availability.status === 'loading'}
+                >
+                  {observations.map((o) => (
+                    <option key={o.date} value={o.date}>
+                      {formatDate(o.date)} · {o.cloud_cover_pct != null ? `${o.cloud_cover_pct.toFixed(0)}% cloud` : 'cloud n/a'}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] leading-snug text-ink-subtle">
+                  {obsCount} dates between {formatDate(avData?.date_from)} and {formatDate(avData?.date_to)} with ≤{avData?.max_cloud_pct}% scene cloud.
+                  {availability.status === 'loading' && ' Updating layers…'}
+                </p>
               </div>
             )}
           </DashboardCard>

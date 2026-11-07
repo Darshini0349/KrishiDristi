@@ -9,6 +9,7 @@ import { DISTRICT_BOUNDARY_URL } from '@/config/map'
 import { formatDateTime } from '@/utils/format'
 
 const ENDPOINT_DOCS = [
+  { method: 'GET', path: '/api/health', purpose: 'Backend health and model status' },
   { method: 'GET', path: ENDPOINTS.regions, purpose: 'List supported regions' },
   { method: 'GET', path: ENDPOINTS.region('mysuru'), purpose: 'Region detail and boundary' },
   { method: 'GET', path: ENDPOINTS.satelliteAvailability, purpose: 'Sentinel-2 acquisitions and imagery tile layers' },
@@ -91,7 +92,7 @@ export default function SettingsPage() {
         </form>
       </DashboardCard>
 
-      <DashboardCard flush title="Planned API endpoints" subtitle="The frontend is wired to these routes; they will work once the FastAPI service implements them.">
+      <DashboardCard flush title="API endpoints" subtitle="Implemented by the FastAPI service in backend/. Interactive docs at /docs on the API server.">
         <ul className="divide-y divide-line">
           {ENDPOINT_DOCS.map((e) => (
             <li key={e.method + e.path} className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:gap-3">

@@ -9,8 +9,11 @@ export function useRegions() {
   return useApi((signal) => fetchRegions(signal), [])
 }
 
-export function useSatelliteAvailability(regionId: string) {
-  return useApi((signal) => fetchSatelliteAvailability({ region_id: regionId }, signal), [regionId])
+export function useSatelliteAvailability(regionId: string, layerDate?: string | null) {
+  return useApi(
+    (signal) => fetchSatelliteAvailability({ region_id: regionId, ...(layerDate ? { layer_date: layerDate } : {}) }, signal),
+    [regionId, layerDate ?? null],
+  )
 }
 
 export function useClassificationSummary(regionId: string) {
